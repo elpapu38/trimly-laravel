@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 17-07-2026 a las 23:18:51
+-- Tiempo de generación: 30-07-2026 a las 21:35:00
 -- Versión del servidor: 8.4.3
 -- Versión de PHP: 8.3.30
 
@@ -408,6 +408,30 @@ INSERT INTO `audit_log` (`id`, `user_id`, `action`, `entity`, `entity_id`, `payl
 (5, 1, 'shop_approved', 'shop', 4, '{\"shop_name\": \"Spa Fernanda\"}', '127.0.0.1', '2026-06-01 15:00:00'),
 (6, 1, 'shop_featured', 'shop', 4, '{\"shop_name\": \"Spa Fernanda\"}', '127.0.0.1', '2026-06-01 15:05:00'),
 (7, 1, 'user_login', 'user', 1, '{\"email\": \"admin@trimly.com\"}', '127.0.0.1', '2026-06-08 23:38:38');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cache`
+--
+
+CREATE TABLE `cache` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cache_locks`
+--
+
+CREATE TABLE `cache_locks` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1042,6 +1066,22 @@ INSERT INTO `employee_services` (`employee_id`, `service_id`, `custom_price`, `c
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `failed_jobs`
+--
+
+CREATE TABLE `failed_jobs` (
+  `id` bigint UNSIGNED NOT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `favorites`
 --
 
@@ -1095,6 +1135,62 @@ INSERT INTO `favorites` (`user_id`, `shop_id`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `jobs`
+--
+
+CREATE TABLE `jobs` (
+  `id` bigint UNSIGNED NOT NULL,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint UNSIGNED NOT NULL,
+  `reserved_at` int UNSIGNED DEFAULT NULL,
+  `available_at` int UNSIGNED NOT NULL,
+  `created_at` int UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `job_batches`
+--
+
+CREATE TABLE `job_batches` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_jobs` int NOT NULL,
+  `pending_jobs` int NOT NULL,
+  `failed_jobs` int NOT NULL,
+  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8mb4_unicode_ci,
+  `cancelled_at` int DEFAULT NULL,
+  `created_at` int NOT NULL,
+  `finished_at` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `migrations`
+--
+
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
+(1, '0001_01_01_000000_create_users_table', 1),
+(2, '0001_01_01_000001_create_cache_table', 1),
+(3, '0001_01_01_000002_create_jobs_table', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `notifications`
 --
 
@@ -1143,6 +1239,18 @@ INSERT INTO `notifications` (`id`, `user_id`, `type`, `title`, `body`, `action_u
 (26, 57, 'booking_new', 'Nuevo turno recibido', 'Se registró un nuevo turno en tu local.', '/panel/turnos', NULL, '2026-05-25 16:37:00', '2026-05-25 11:00:00'),
 (27, 64, 'appointment_cancelled', 'Turno cancelado', 'Un turno fue cancelado.', '/mis-turnos', NULL, '2026-05-22 01:55:00', '2026-05-22 01:00:00'),
 (28, 71, 'booking_confirmed', 'Turno confirmado', 'Tu turno fue confirmado. ¡Te esperamos!', '/mis-turnos', NULL, NULL, '2026-05-28 14:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `password_reset_tokens`
+--
+
+CREATE TABLE `password_reset_tokens` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1423,7 +1531,8 @@ INSERT INTO `reviews` (`id`, `appointment_id`, `shop_id`, `client_id`, `rating`,
 (247, 410, 12, 80, 4, 4, 4, 4, 'El local es cómodo y el trabajo fue prolijo. Volvería.', NULL, NULL, 1, 0, NULL, 7, '2026-05-18 08:36:00'),
 (248, 411, 12, 9, 5, 5, 4, 5, 'Muy buen ambiente y excelente trabajo. Ya saqué turno para el mes que viene.', NULL, NULL, 1, 0, NULL, 7, '2026-03-31 14:13:00'),
 (249, 412, 15, 71, 3, 4, 3, 3, 'Buen trabajo, aunque esperé mucho más de lo prometido.', NULL, NULL, 1, 0, NULL, 2, '2026-06-12 12:09:00'),
-(250, 413, 10, 61, 4, 3, 4, 4, 'Buena atención y trabajo prolijo. Lo recomendaría.', NULL, NULL, 1, 0, NULL, 3, '2026-05-26 13:40:00');
+(250, 413, 10, 61, 4, 3, 4, 4, 'Buena atención y trabajo prolijo. Lo recomendaría.', NULL, NULL, 1, 0, NULL, 3, '2026-05-26 13:40:00'),
+(292, 45, 1, 21, 5, NULL, NULL, NULL, '', NULL, NULL, 1, 0, NULL, 0, '2026-07-30 17:28:52');
 
 -- --------------------------------------------------------
 
@@ -1657,6 +1766,28 @@ INSERT INTO `service_categories` (`id`, `shop_id`, `name`, `sort_order`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_activity` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sessions`
+--
+
+INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+('b4EKO964PWrcUB5coEsLf02hAp5UpxTuWkMOSkh5', 25, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoieW50UkhXazlpODlPNEpWdDIxUlhmRGxZeTZVU3IxeTBqZXF4RU9PTyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NzA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC8ud2VsbC1rbm93bi9hcHBzcGVjaWZpYy9jb20uY2hyb21lLmRldnRvb2xzLmpzb24iO3M6NToicm91dGUiO047fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6Nzoidmlld18xNCI7aToxNzg1NDQzMjYwO3M6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI1O3M6Njoidmlld18xIjtpOjE3ODU0NDMyOTc7fQ==', 1785443431);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `shops`
 --
 
@@ -1708,7 +1839,7 @@ CREATE TABLE `shops` (
 --
 
 INSERT INTO `shops` (`id`, `owner_id`, `name`, `slug`, `type`, `target_audience`, `description`, `specialties`, `amenities`, `phone`, `email`, `website`, `instagram`, `facebook`, `whatsapp`, `logo`, `cover_image`, `address`, `city`, `province`, `country`, `postal_code`, `latitude`, `longitude`, `currency`, `rating_avg`, `rating_count`, `status`, `plan`, `plan_expires`, `verified`, `featured`, `views_count`, `is_shadowbanned`, `suspension_reason`, `suspension_until`, `ban_reason`, `created_at`, `updated_at`, `suspension_public`) VALUES
-(1, 2, 'Barbería El Navajo', 'barberia-el-navajo', 'barbershop', 'men', 'La mejor barbería de Viedma. Cortes clásicos y modernos, afeitado con navaja y arreglo de barba. Atención personalizada y ambiente de primera.', 'Fade,Degradado,Barba,Navaja,Keratina,Coloración', '', '+5492920111222', 'info@elnavajo.com', '', '', '', '', 'shops/img_6a2a2cb9c62672.68205480.png', 'shops/img_6a27a3d927b3c3.66540191.jpg', 'Domingo De Oro 561', 'Patagones', 'Buenos Aires', 'Argentina', '8504', -40.7950575, -62.9618096, 'ARS', 4.08, 13, 'active', 'pro', NULL, 1, 0, 39, 0, NULL, NULL, NULL, '2026-06-08 23:26:34', '2026-07-17 17:39:58', 1),
+(1, 2, 'Barbería El Navajo', 'barberia-el-navajo', 'barbershop', 'men', 'La mejor barbería de Viedma. Cortes clásicos y modernos, afeitado con navaja y arreglo de barba. Atención personalizada y ambiente de primera.', 'Fade,Degradado,Barba,Navaja,Keratina,Coloración', '', '+5492920111222', 'info@elnavajo.com', '', '', '', '', 'shops/img_6a2a2cb9c62672.68205480.png', 'shops/img_6a27a3d927b3c3.66540191.jpg', 'Domingo De Oro 561', 'Patagones', 'Buenos Aires', 'Argentina', '8504', -40.7950575, -62.9618096, 'ARS', 4.14, 14, 'active', 'pro', NULL, 1, 0, 41, 0, NULL, NULL, NULL, '2026-06-08 23:26:34', '2026-07-30 20:28:52', 1),
 (2, 5, 'Salón Vale', 'salon-vale', 'salon', 'women', 'Salón de belleza femenino con ambiente moderno y acogedor. Especialistas en coloración, corte y tratamientos capilares.', 'Coloración,Mechas,Keratina,Corte,Peinado', 'WiFi,Estacionamiento,Café gratis', '+5492920334455', 'vale@salonvale.com', NULL, 'salon.vale', NULL, '+5492920334455', NULL, NULL, 'Av. Rivadavia 1200', 'Viedma', 'Río Negro', 'Argentina', '8500', -40.8122000, -62.9935000, 'ARS', 4.38, 8, 'active', 'pro', '2027-01-01', 1, 1, 97, 0, NULL, NULL, NULL, '2026-06-01 09:00:00', '2026-07-02 22:01:28', 0),
 (3, 6, 'Nails by Ramón', 'nails-by-ramon', 'nails', 'women', 'Estudio de uñas profesional. Gel, acrílico, nail art y más. Resultados que duran.', 'Gel,Acrílico,Nail Art,Semipermanente,Decoración', 'Música ambiente,Té y café', '+5492920445566', 'ramon@nailsramon.com', NULL, 'nails.ramon', NULL, '+5492920445566', NULL, NULL, 'Saavedra 340', 'Viedma', 'Río Negro', 'Argentina', '8500', -40.8098000, -62.9910000, 'ARS', 2.83, 6, 'active', 'free', NULL, 0, 0, 48, 0, NULL, NULL, NULL, '2026-06-02 11:00:00', '2026-07-02 12:03:49', 1),
 (4, 7, 'Spa Fernanda', 'spa-fernanda', 'spa', 'unisex', 'Espacio de bienestar y relajación. Masajes, aromaterapia y tratamientos corporales para desconectarte del estrés.', 'Masajes,Aromaterapia,Exfoliación,Tratamientos Faciales', 'Estacionamiento,Ducha,Música relajante,Aromas', '+5492920556677', 'fer@spafernanda.com', NULL, 'spafernanda', NULL, '+5492920556677', NULL, NULL, 'Belgrano 870', 'Patagones', 'Buenos Aires', 'Argentina', '8504', -40.7967000, -62.9815000, 'ARS', 3.71, 7, 'active', 'premium', '2027-06-01', 1, 0, 140, 0, NULL, NULL, NULL, '2026-06-01 12:00:00', '2026-07-02 12:03:49', 1),
@@ -1721,7 +1852,7 @@ INSERT INTO `shops` (`id`, `owner_id`, `name`, `slug`, `type`, `target_audience`
 (11, 68, 'Studio Hair Bariloche', 'studio-hair-bariloche', 'mixed', 'unisex', 'Estudio de peluquería moderno en el centro de Bariloche. Cortes, color y tratamientos de autor.', 'Corte,Color,Balayage,Tratamientos', 'WiFi,Café gratis,Estacionamiento', '+5492944100001', 'contacto@studiohairbrc.com', NULL, 'studiohair.brc', NULL, '+5492944100001', NULL, NULL, 'Mitre 540', 'Bariloche', 'Río Negro', 'Argentina', '8400', -41.1340000, -71.3050000, 'ARS', 3.00, 10, 'active', 'free', NULL, 0, 0, 14, 0, NULL, NULL, NULL, '2026-06-10 00:00:00', '2026-07-02 12:03:49', 1),
 (12, 69, 'Barba Negra', 'barba-negra', 'barbershop', 'men', 'Barbería clásica con toques modernos. Especialistas en barba y afeitado tradicional.', 'Fade,Barba,Navaja,Diseño', 'WiFi,Cerveza artesanal', '+5492920778899', 'info@barbanegra.com', NULL, 'barbanegra.bbq', NULL, '+5492920778899', NULL, NULL, 'San Martín 410', 'Viedma', 'Río Negro', 'Argentina', '8500', -40.8105000, -62.9890000, 'ARS', 3.75, 12, 'active', 'pro', '2027-03-01', 1, 0, 59, 0, NULL, NULL, NULL, '2026-06-10 00:00:00', '2026-07-02 12:03:49', 1),
 (13, 70, 'Glam Nails Studio', 'glam-nails-studio', 'nails', 'women', 'Estudio especializado en uñas esculpidas, nail art y diseños personalizados.', 'Acrílico,Gel,Nail Art,Decoración 3D', 'Música ambiente,Té y café,WiFi', '+5492920889900', 'hola@glamnails.com', NULL, 'glamnails.studio', NULL, '+5492920889900', NULL, NULL, 'Buenos Aires 220', 'Viedma', 'Río Negro', 'Argentina', '8500', -40.8090000, -62.9920000, 'ARS', 4.90, 10, 'active', 'free', NULL, 0, 0, 26, 0, NULL, NULL, NULL, '2026-05-19 00:00:00', '2026-07-02 12:03:49', 1),
-(14, 71, 'Zen Wellness Spa', 'zen-wellness-spa', 'spa', 'unisex', 'Centro de bienestar integral. Masajes, faciales y tratamientos corporales relajantes.', 'Masajes,Faciales,Aromaterapia,Reflexología', 'Estacionamiento,Música relajante,Ducha', '+5491155667788', 'info@zenwellness.com.ar', 'https://zenwellness.com.ar', 'zenwellness.spa', NULL, '+5491155667788', NULL, NULL, 'Av. Cabildo 2300', 'Buenos Aires', 'CABA', 'Argentina', '1428', -34.5612000, -58.4598000, 'ARS', 4.40, 10, 'active', 'premium', '2027-02-15', 1, 1, 189, 0, NULL, NULL, NULL, '2026-06-08 00:00:00', '2026-07-02 12:03:49', 1),
+(14, 71, 'Zen Wellness Spa', 'zen-wellness-spa', 'spa', 'unisex', 'Centro de bienestar integral. Masajes, faciales y tratamientos corporales relajantes.', 'Masajes,Faciales,Aromaterapia,Reflexología', 'Estacionamiento,Música relajante,Ducha', '+5491155667788', 'info@zenwellness.com.ar', 'https://zenwellness.com.ar', 'zenwellness.spa', NULL, '+5491155667788', NULL, NULL, 'Av. Cabildo 2300', 'Buenos Aires', 'CABA', 'Argentina', '1428', -34.5612000, -58.4598000, 'ARS', 4.40, 10, 'active', 'premium', '2027-02-15', 1, 1, 191, 0, NULL, NULL, NULL, '2026-06-08 00:00:00', '2026-07-30 20:27:40', 1),
 (15, 72, 'Inkonnu Tattoo', 'inkonnu-tattoo', 'tattoo', 'unisex', 'Estudio de tatuajes contemporáneo. Diseños minimalistas, fine line y geométricos.', 'Fine Line,Geométrico,Minimalista,Lettering', 'Portfolio digital,Zona de espera', '+5491166990011', 'contacto@inkonnu.com', NULL, 'inkonnu.tattoo', NULL, '+5491166990011', NULL, NULL, 'Honduras 4800', 'Buenos Aires', 'CABA', 'Argentina', '1414', -34.5850000, -58.4310000, 'ARS', 3.79, 14, 'active', 'pro', '2026-12-20', 1, 0, 96, 0, NULL, NULL, NULL, '2026-05-17 00:00:00', '2026-07-02 12:03:49', 1),
 (16, 135, 'Barbería Pichincha', 'barberia-pichincha', 'barbershop', 'men', 'Barbería de barrio en el corazón de Pichincha, Rosario. Cortes clásicos, fade y arreglo de barba con mucha onda.', 'Fade,Corte Clásico,Barba,Diseño', 'WiFi,Música en vivo los viernes', '+5493415501122', 'info@barberiapichincha.com.ar', NULL, 'barberia.pichincha', NULL, '+5493415501122', NULL, NULL, 'Bv. Pellegrini 1450', 'Rosario', 'Santa Fe', 'Argentina', '2000', -32.9468000, -60.6393000, 'ARS', 3.91, 11, 'active', 'free', NULL, 0, 0, 1, 0, NULL, NULL, NULL, '2026-04-20 09:00:00', '2026-07-02 12:03:49', 1),
 (17, 136, 'Rosario Nails Lounge', 'rosario-nails-lounge', 'nails', 'women', 'Estudio de uñas en pleno centro de Rosario. Esculpidas, semipermanente y nail art a la moda.', 'Esculpidas,Semipermanente,Nail Art,Pedicura', 'Café gratis,WiFi,Música ambiente', '+5493415502233', 'hola@rosarionails.com.ar', NULL, 'rosario.nails.lounge', NULL, '+5493415502233', NULL, NULL, 'Córdoba 1287', 'Rosario', 'Santa Fe', 'Argentina', '2000', -32.9442000, -60.6505000, 'ARS', 4.08, 13, 'active', 'pro', '2027-04-01', 1, 0, 1, 0, NULL, NULL, NULL, '2026-04-25 10:00:00', '2026-07-02 12:03:49', 1),
@@ -2089,7 +2220,7 @@ CREATE TABLE `users` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `phone` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `password_hash` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `role` enum('superadmin','shop_owner','employee','client') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'client',
   `avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email_verified` tinyint(1) NOT NULL DEFAULT '0',
@@ -2108,7 +2239,7 @@ CREATE TABLE `users` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password_hash`, `role`, `avatar`, `email_verified`, `verify_token`, `reset_token`, `reset_expires`, `status`, `last_login`, `created_at`, `updated_at`, `ban_reason`, `suspended_until`) VALUES
+INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `role`, `avatar`, `email_verified`, `verify_token`, `reset_token`, `reset_expires`, `status`, `last_login`, `created_at`, `updated_at`, `ban_reason`, `suspended_until`) VALUES
 (1, 'Super Admin', 'admin@trimly.com', NULL, '$2y$12$zAPIJXQLQ.wLDy4yOBtF/.lnwMTZ.rX4PRT3D54cWfRxRIkn5N52W', 'superadmin', NULL, 1, NULL, NULL, NULL, 'active', '2026-06-25 21:31:09', '2026-06-08 23:26:34', '2026-06-25 21:31:09', NULL, NULL),
 (2, 'Carlos Mendez', 'carlos@barberia.com', '+5492920123456', '$2y$12$CHQ64fq7XabBAs9iFgn9nO0PoS4O37NilGbABlhszMhrYCfX/gxMy', 'shop_owner', NULL, 1, NULL, NULL, NULL, 'active', '2026-07-02 22:10:40', '2026-06-08 23:26:34', '2026-07-02 22:10:40', NULL, NULL),
 (3, 'SAD', 'ejemplo1@ejemplo.com', '5492920256833', '$2y$12$mFn/kGOa89IsbAskVIoRW.xyx3FivZtlmn.0.ckKNr9X1x0K1x5y6', 'shop_owner', NULL, 1, '0bd224f3f8d0b1bd037da67bed8ed22c1e9a89ac8a6a6c16e4b5ea7ccde54a8b', NULL, NULL, 'active', NULL, '2026-06-09 02:00:06', '2026-06-11 22:47:17', NULL, NULL),
@@ -2133,7 +2264,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password_hash`, `role`, `a
 (22, 'Diego Fernández', 'diego@gmail.com', '+5492920400003', '$2y$12$sPbsZy3n2kLvwPPuTyXdKuZ6C7C3PaNzZkHfNJ95VJheFHVXaBzgu', 'client', NULL, 1, NULL, NULL, NULL, 'active', NULL, '2026-06-10 01:28:09', '2026-06-10 01:28:09', NULL, NULL),
 (23, 'Marina Castro', 'marina@gmail.com', '+5492920400004', '$2y$12$sPbsZy3n2kLvwPPuTyXdKuZ6C7C3PaNzZkHfNJ95VJheFHVXaBzgu', 'client', NULL, 1, NULL, NULL, NULL, 'active', NULL, '2026-06-10 01:28:09', '2026-06-10 01:28:09', NULL, NULL),
 (24, 'Tomás Ibáñez', 'tomas@gmail.com', '+5492920400005', '$2y$12$sPbsZy3n2kLvwPPuTyXdKuZ6C7C3PaNzZkHfNJ95VJheFHVXaBzgu', 'client', NULL, 1, NULL, NULL, NULL, 'active', NULL, '2026-06-10 01:28:09', '2026-06-10 01:28:09', NULL, NULL),
-(25, 'Cliente Test', 'cliente.test@trimly.com', '+5492920111222', '$2y$12$kMSn.d9p3qWEeAGYTr0MU.NFdN2MwAgnVxKOAWf2F9Ft.9Z6n6RSq', 'client', 'avatars/img_6a358a8bcc5966.06820788.png', 1, NULL, NULL, NULL, 'active', '2026-07-02 12:07:55', '2026-06-10 01:55:51', '2026-07-02 12:07:55', NULL, NULL),
+(25, 'Cliente Test', 'cliente.test@trimly.com', '+5492920111222', '$2y$12$kMSn.d9p3qWEeAGYTr0MU.NFdN2MwAgnVxKOAWf2F9Ft.9Z6n6RSq', 'client', 'avatars/img_PdwuIlOfUkHUDifJo5O7.jpg', 1, NULL, NULL, NULL, 'active', '2026-07-02 12:07:55', '2026-06-10 01:55:51', '2026-07-30 20:30:26', NULL, NULL),
 (26, 'Negocio Test', 'negocio.test@trimly.com', '+5492920500002', '$2y$12$YSJd8YC63E3PgaXdc9bIGeF1.ok1OUxnUZn57buIoBduvx4lC3Ya2', 'shop_owner', NULL, 1, NULL, NULL, NULL, 'active', '2026-06-10 02:00:59', '2026-06-10 01:55:51', '2026-06-10 02:00:59', NULL, NULL),
 (27, 'insanos eticos', 'lucas@gmail.com', '+5492920111222', '$2y$12$hCUgrYqWVzBIFLM/ttTKu.BOwM93r2X59Z9Xycctq9Jx4LLEmZ0k.', 'employee', NULL, 1, '2b8cab181624c1346175c16e4881c4d14902b33472cd4db1eb658215e50ebeff', NULL, NULL, 'active', '2026-06-25 21:35:12', '2026-06-11 22:46:30', '2026-06-25 21:35:12', NULL, NULL),
 (28, 'Valentina Ortiz', 'valentina.ortiz0@gmail.com', '+549292011000', '$2y$12$KX8vLm3pQr7nZ1wYoP2sOeT4uI6jH9kA0fN5bM8cV3xL1dG7tR2q.', 'client', NULL, 1, NULL, NULL, NULL, 'active', '2026-05-21 07:14:00', '2026-05-18 07:14:00', '2026-05-18 07:14:00', NULL, NULL),
@@ -2257,6 +2388,20 @@ ALTER TABLE `audit_log`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `cache`
+--
+ALTER TABLE `cache`
+  ADD PRIMARY KEY (`key`),
+  ADD KEY `cache_expiration_index` (`expiration`);
+
+--
+-- Indices de la tabla `cache_locks`
+--
+ALTER TABLE `cache_locks`
+  ADD PRIMARY KEY (`key`),
+  ADD KEY `cache_locks_expiration_index` (`expiration`);
+
+--
 -- Indices de la tabla `clients`
 --
 ALTER TABLE `clients`
@@ -2293,6 +2438,13 @@ ALTER TABLE `employee_services`
   ADD KEY `service_id` (`service_id`);
 
 --
+-- Indices de la tabla `failed_jobs`
+--
+ALTER TABLE `failed_jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
+
+--
 -- Indices de la tabla `favorites`
 --
 ALTER TABLE `favorites`
@@ -2300,11 +2452,36 @@ ALTER TABLE `favorites`
   ADD KEY `shop_id` (`shop_id`);
 
 --
+-- Indices de la tabla `jobs`
+--
+ALTER TABLE `jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `jobs_queue_index` (`queue`);
+
+--
+-- Indices de la tabla `job_batches`
+--
+ALTER TABLE `job_batches`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `notifications`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indices de la tabla `password_reset_tokens`
+--
+ALTER TABLE `password_reset_tokens`
+  ADD PRIMARY KEY (`email`);
 
 --
 -- Indices de la tabla `reviews`
@@ -2345,6 +2522,14 @@ ALTER TABLE `services`
 ALTER TABLE `service_categories`
   ADD PRIMARY KEY (`id`),
   ADD KEY `shop_id` (`shop_id`);
+
+--
+-- Indices de la tabla `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sessions_user_id_index` (`user_id`),
+  ADD KEY `sessions_last_activity_index` (`last_activity`);
 
 --
 -- Indices de la tabla `shops`
@@ -2453,6 +2638,24 @@ ALTER TABLE `employee_photos`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
+-- AUTO_INCREMENT de la tabla `failed_jobs`
+--
+ALTER TABLE `failed_jobs`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `jobs`
+--
+ALTER TABLE `jobs`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT de la tabla `notifications`
 --
 ALTER TABLE `notifications`
@@ -2462,7 +2665,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT de la tabla `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=292;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=293;
 
 --
 -- AUTO_INCREMENT de la tabla `review_reports`
