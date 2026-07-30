@@ -1,0 +1,88 @@
+@extends('layouts.app')
+@section('content')
+<div class="flex min-h-screen pt-16 pb-20 lg:pb-0">
+  @include('shop_dash.sidebar')
+  <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden min-w-0">
+
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <h1 class="font-display text-xl sm:text-2xl text-cream-light font-bold">Reseñas</h1>
+      <div class="flex items-center gap-2 bg-ink-800 border border-ink-700 rounded-xl px-4 py-2">
+        <span class="text-gold text-lg">★</span>
+        <span class="text-cream-light font-bold text-lg">{{ number_format((float)$shop->rating_avg,1) }}</span>
+        <span class="text-ink-400 text-sm">({{ $shop->rating_count }} reseñas)</span>
+      </div>
+    </div>
+
+    @if(empty($reviews))
+    <div class="text-center py-20 text-ink-400">
+      <p>Todavía no recibiste reseñas</p>
+      <p class="text-sm mt-2">Las reseñas aparecerán cuando los clientes completen sus turnos</p>
+    </div>
+    @else
+    <div class="space-y-4">
+      @foreach($reviews as $r)
+      <div class="bg-ink-800 border border-ink-700 rounded-2xl p-5" id="review-{{ $r->id }}">
+        <div class="flex items-start justify-between mb-3">
+          <div>
+            <p class="text-cream-light font-medium">{{ $r->appointment->client_name ?? 'Cliente' }}</p>
+            <p class="text-ink-400 text-xs">{{ fecha($r->created_at,'d/m/Y') }}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="text-gold">{{ str_repeat('★', (int)$r->rating) }}<span class="text-ink-600">{{ str_repeat('★', 5-(int)$r->rating) }}</span></div>
+            <button onclick="toggleVisibility({{ $r->id }})" class="text-xs px-2 py-1 rounded border {{ $r->is_visible ? 'border-green-500/30 text-green-400' : 'border-red-500/30 text-red-400' }}">{{ $r->is_visible ? 'Visible' : 'Oculta' }}</button>
+          </div>
+        </div>
+        @if($r->comment)<p class="text-ink-300 text-sm leading-relaxed mb-4">{{ $r->comment }}</p>@endif
+        @if($r->reply)
+        <div class="ml-4 pl-4 border-l-2 border-gold/30">
+          <p class="text-xs text-gold mb-1">Tu respuesta:</p>
+          <p class="text-ink-300 text-sm" id="reply-text-{{ $r->id }}">{{ $r->reply }}</p>
+          <button onclick="showReplyForm({{ $r->id }})" class="text-xs text-ink-500 hover:text-gold mt-1">Editar</button>
+        </div>
+        @else
+        <button onclick="showReplyForm({{ $r->id }})" class="text-sm text-gold hover:underline">+ Responder</button>
+        @endif
+        <div id="reply-form-{{ $r->id }}" class="hidden mt-3">
+          <textarea id="reply-input-{{ $r->id }}" rows="2" placeholder="Tu respuesta..." class="input-gold w-full bg-ink-700 border border-ink-600 rounded-xl px-4 py-3 text-cream-light text-sm resize-none mb-2">{{ $r->reply ?? '' }}</textarea>
+          <div class="flex gap-2">
+            <button onclick="submitReply({{ $r->id }})" class="px-4 py-2 bg-gold text-ink-900 font-semibold rounded-lg text-sm hover:bg-gold-300">Publicar</button>
+            <button onclick="hideReplyForm({{ $r->id }})" class="px-4 py-2 border border-ink-600 text-ink-300 rounded-lg text-sm">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      @endforeach
+    </div>
+
+    @if($pagination->lastPage() > 1)
+    <div class="flex justify-center gap-2 mt-6">
+      @for($p = 1; $p <= $pagination->lastPage(); $p++)
+      <a href="?page={{ $p }}" class="w-9 h-9 rounded-lg flex items-center justify-center text-sm border {{ $p == $pagination->currentPage() ? 'bg-gold text-ink-900 border-gold' : 'border-ink-600 text-ink-300 hover:border-gold/50' }}">{{ $p }}</a>
+      @endfor
+    </div>
+    @endif
+    @endif
+  </main>
+</div>
+
+<script>
+function showReplyForm(id) { document.getElementById('reply-form-'+id).classList.remove('hidden'); }
+function hideReplyForm(id) { document.getElementById('reply-form-'+id).classList.add('hidden'); }
+
+async function submitReply(id) {
+  const text = document.getElementById('reply-input-'+id).value.trim();
+  if (!text) return;
+  const form = new FormData();
+  form.append('reply', text);
+  const res = await fetch(@json(url('/panel/resenas')) + `/${id}/reply`, { method: 'POST', body: form, headers: {'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content} });
+  const data = await res.json();
+  if (data.success) { hideReplyForm(id); location.reload(); }
+  else alert(data.error || 'Error al guardar');
+}
+
+async function toggleVisibility(id) {
+  const res = await fetch(@json(url('/panel/resenas')) + `/${id}/toggle`, { method: 'POST', headers: {'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content} });
+  const data = await res.json();
+  if (data.success) location.reload();
+}
+</script>
+@endsection

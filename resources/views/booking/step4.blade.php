@@ -1,0 +1,128 @@
+@extends('layouts.app')
+@section('content')
+@php
+    $diasES = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    $dayName = $diasES[(int) date('w', strtotime($booking['date']))] ?? '';
+    $bookedService = $booking['service'];
+@endphp
+<div class="min-h-screen bg-ink-900 py-10">
+<div class="max-w-3xl mx-auto px-4">
+
+  @include('booking.steps', ['currentStep' => 4])
+
+  <h1 class="font-display text-2xl text-cream-light mb-6">Confirmá tu turno</h1>
+
+  <div class="p-5 bg-ink-800 border border-gold/30 rounded-2xl mb-8">
+    <h2 class="font-semibold text-gold mb-4 text-sm uppercase tracking-wide">Resumen</h2>
+    <div class="grid grid-cols-2 gap-y-3 text-sm">
+      <div><p class="text-ink-400">Local</p><p class="text-cream-light font-medium">{{ $shop->name }}</p></div>
+      <div><p class="text-ink-400">Servicio</p><p class="text-cream-light font-medium">{{ $bookedService->name }}</p></div>
+      <div><p class="text-ink-400">Profesional</p><p class="text-cream-light font-medium">{{ $booking['employee_name'] ?? '' }}</p></div>
+      <div><p class="text-ink-400">Duración</p><p class="text-cream-light font-medium">{{ duracionTexto((int)$bookedService->duration_min) }}</p></div>
+      <div><p class="text-ink-400">Fecha</p><p class="text-cream-light font-medium">{{ $dayName }} {{ fecha($booking['date'], 'd/m/Y') }}</p></div>
+      <div><p class="text-ink-400">Horario</p><p class="text-cream-light font-medium">{{ hora($booking['start_time']) }} hs</p></div>
+      <div class="col-span-2 pt-3 border-t border-ink-700 flex justify-between">
+        <p class="text-ink-400">Total</p>
+        <p class="text-gold text-lg font-bold">{{ money((float)$bookedService->price) }}</p>
+      </div>
+    </div>
+  </div>
+
+  <form method="POST" action="{{ url('/reservar/'.$shop->slug.'/confirmar') }}">
+    @csrf
+    @if($currentUser && $currentUser->role !== 'client')
+    <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-6">
+      <p class="text-red-400 font-semibold text-sm mb-1">⚠ No podés reservar con esta cuenta</p>
+      <p class="text-xs text-red-300/80">Las cuentas de negocio, empleado o admin no pueden hacer reservas.</p>
+      <a href="{{ url('/logout') }}" class="text-xs text-red-400 underline mt-2 inline-block">Cerrar sesión para usar otra cuenta</a>
+    </div>
+    @else
+
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-semibold text-cream-light">Tus datos</h2>
+      @if($currentUser)
+      <span class="text-xs text-emerald-400 flex items-center gap-1">
+        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        Datos de tu cuenta
+      </span>
+      @else
+      <div class="text-xs text-ink-400">
+        <a href="{{ url('/login') }}" class="text-gold hover:underline">Iniciá sesión</a>
+        o <a href="{{ url('/registro') }}" class="text-gold hover:underline">registrate</a> para guardar tu historial
+      </div>
+      @endif
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="block text-sm text-ink-300 mb-1">Nombre completo *</label>
+        <input type="text" name="client_name" required value="{{ old('client_name', $currentUser->name ?? '') }}"
+               class="input-gold w-full bg-ink-800 border {{ $errors->has('client_name') ? 'border-red-500' : 'border-ink-600' }} rounded-xl px-4 py-3 text-cream-light">
+        @error('client_name')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-sm text-ink-300 mb-1">Email *</label>
+        <input type="email" name="client_email" required value="{{ old('client_email', $currentUser->email ?? '') }}"
+               class="input-gold w-full bg-ink-800 border {{ $errors->has('client_email') ? 'border-red-500' : 'border-ink-600' }} rounded-xl px-4 py-3 text-cream-light">
+        @error('client_email')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+      </div>
+      <div>
+        <label class="block text-sm text-ink-300 mb-1">Teléfono</label>
+        <input type="tel" name="client_phone" value="{{ old('client_phone', $currentUser->phone ?? '') }}" class="input-gold w-full bg-ink-800 border border-ink-600 rounded-xl px-4 py-3 text-cream-light">
+      </div>
+      <div>
+        <label class="block text-sm text-ink-300 mb-1">Nota para el local (opcional)</label>
+        <input type="text" name="notes" value="{{ old('notes') }}" placeholder="Ej: preferencia de corte" class="input-gold w-full bg-ink-800 border border-ink-600 rounded-xl px-4 py-3 text-cream-light">
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <p class="text-sm text-ink-300 mb-3 font-medium">¿Cómo querés pagar?</p>
+      @if($depositPct > 0)
+      <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl mb-3 text-xs text-amber-300">
+        Este servicio requiere una seña del <strong>{{ $depositPct }}%</strong> ({{ money($depositAmt, $shop->currency) }}) para confirmar el turno.
+        Podés pagarla ahora online o pagar el monto completo de una vez. También podés acordar el pago directamente en el local.
+      </div>
+      <div class="space-y-2">
+        <label class="flex items-center gap-3 p-4 bg-ink-800 border border-ink-600 rounded-xl cursor-pointer has-[:checked]:border-gold has-[:checked]:bg-gold/5">
+          <input type="radio" name="payment_option" value="deposit" checked class="sr-only">
+          <div class="w-5 h-5 rounded-full border-2 border-ink-500 flex-shrink-0 radio-dot"></div>
+          <div class="flex-1">
+            <p class="text-cream-light font-medium text-sm">Pagar seña ahora <span class="text-gold">{{ money($depositAmt, $shop->currency) }}</span></p>
+            <p class="text-xs text-ink-400">El resto ({{ money($bookedService->price - $depositAmt, $shop->currency) }}) lo abonás en el local</p>
+          </div>
+        </label>
+        <label class="flex items-center gap-3 p-4 bg-ink-800 border border-ink-600 rounded-xl cursor-pointer has-[:checked]:border-gold has-[:checked]:bg-gold/5">
+          <input type="radio" name="payment_option" value="online" class="sr-only">
+          <div class="w-5 h-5 rounded-full border-2 border-ink-500 flex-shrink-0 radio-dot"></div>
+          <div>
+            <p class="text-cream-light font-medium text-sm">Pagar total ahora <span class="text-gold">{{ money($bookedService->price, $shop->currency) }}</span></p>
+            <p class="text-xs text-ink-400">Pago completo vía MercadoPago</p>
+          </div>
+        </label>
+      </div>
+      @else
+      <div class="grid grid-cols-2 gap-3">
+        <label class="flex items-center gap-3 p-4 bg-ink-800 border border-ink-600 rounded-xl cursor-pointer has-[:checked]:border-gold has-[:checked]:bg-gold/5">
+          <input type="radio" name="payment_option" value="on_site" checked class="sr-only">
+          <div class="w-5 h-5 rounded-full border-2 border-ink-500 flex-shrink-0 radio-dot"></div>
+          <div><p class="text-cream-light font-medium text-sm">En el local</p><p class="text-xs text-ink-400">Pagás el día del turno</p></div>
+        </label>
+        <label class="flex items-center gap-3 p-4 bg-ink-800 border border-ink-600 rounded-xl cursor-pointer has-[:checked]:border-gold has-[:checked]:bg-gold/5">
+          <input type="radio" name="payment_option" value="online" class="sr-only">
+          <div class="w-5 h-5 rounded-full border-2 border-ink-500 flex-shrink-0 radio-dot"></div>
+          <div><p class="text-cream-light font-medium text-sm">Online ahora</p><p class="text-xs text-ink-400">Vía MercadoPago</p></div>
+        </label>
+      </div>
+      @endif
+    </div>
+
+    <div class="flex justify-between mt-8">
+      <a href="{{ url('/reservar/'.$shop->slug.'/horario') }}" class="px-6 py-3 border border-ink-600 text-ink-300 rounded-full hover:border-gold/50 transition-colors">← Atrás</a>
+      <button type="submit" class="px-8 py-3 bg-gold text-ink-900 font-bold rounded-full hover:bg-gold-300 transition-colors">Confirmar turno</button>
+    </div>
+    @endif
+  </form>
+</div>
+</div>
+@endsection
